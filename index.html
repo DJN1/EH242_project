@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+   * element that contains the map. */
+        #map {
+            height: 100% !important;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        let map;
+        let tipObj
+        let offset = {
+            x: 20,
+            y: 20,
+        };
+        
+        function getAdj(id) {
+            if(id === "india") {
+                return "Indian";
+            }
+            else if(id === "greece") {
+                return "Greek";
+            }
+            else if(id === "rome") {
+                return "Roman";
+            }
+            else if(id === "middleEast") {
+                return "Christian";
+            }
+            else if(id === "mesopotamia") {
+                return "Babylonian";
+            }
+            else if(id === "iceland") {
+                return "Norse";
+            }
+            else if(id === "northAmerica") {
+                return "Native American";
+            }
+            else if(id === "uganda") {
+                return "Ugandan";
+            }
+            else if(id === "nigeria") {
+                return "Nigerian";
+            }
+            else if(id === "guatemala") {
+                return "Maya";
+            }
+            else {
+                return "Unknown";
+            }
+        }
+
+        function launchModal(event, data) {
+            $("#modalTitle").text(data.title);
+            $("#modalContent").html("");
+            $("#modalContent").append(`<a href="/${data.id}.html" class='stretched-link'>Learn more about ${getAdj(data.id)} mythology</link>`)
+            $("#myModal").modal("show");
+        }
+
+        function injectTooltip(event, data) {
+            if (!tipObj && event) {
+                tipObj = document.createElement("div");
+                tipObj.style.width = "auto";
+                tipObj.style.height = "1em";
+                tipObj.style.background = "white";
+                tipObj.style.borderRadius = "0.5em";
+                tipObj.style.padding = "1em";
+                tipObj.style.fontFamily = "Arial,Helvetica";
+                tipObj.style.verticalAlign = "middle";
+                tipObj.style.textAlign = "center";
+                tipObj.style.lineHeight = "normal";
+                tipObj.innerHTML = data.title;
+                tipObj.style.position = "fixed";
+                tipObj.style.boxSizing = "unset";
+                tipObj.style.top = event.tb.clientY + window.scrollY + offset.y + "px";
+                tipObj.style.left = event.tb.clientX + window.scrollX + offset.x + "px";
+                document.body.appendChild(tipObj);
+            }
+        }
+
+        function moveTooltip(event) {
+            if (tipObj && event) {
+                tipObj.style.top = event.tb.clientY + window.scrollY + offset.y + "px";
+                tipObj.style.left = event.tb.clientX + window.scrollX + offset.x + "px";
+            }
+        }
+
+        function deleteTooltip(event) {
+            if (tipObj) {
+                document.body.removeChild(tipObj);
+                tipObj = null;
+            }
+        }
+
+        function initMap() {
+
+            let styles = [{
+                featureType: "all",
+                elementType: "all",
+                stylers: [{
+                    saturation: -100
+                }]
+            }];
+
+            let indiaCoords = [
+                new google.maps.LatLng(8.102076, 77.519092),
+                new google.maps.LatLng(21.684288, 89.094167),
+                new google.maps.LatLng(26.588023, 88.503761),
+                new google.maps.LatLng(25.113842, 92.238007),
+                new google.maps.LatLng(22.159934, 92.807514),
+                new google.maps.LatLng(27.747137, 97.059525),
+                new google.maps.LatLng(28.298006, 95.876478),
+                new google.maps.LatLng(27.143455, 88.745504),
+                new google.maps.LatLng(28.116470, 88.635680),
+                new google.maps.LatLng(26.365914, 88.025641),
+                new google.maps.LatLng(28.885826, 80.085272),
+                new google.maps.LatLng(30.264304, 80.937190),
+                new google.maps.LatLng(32.993392, 77.705604),
+                new google.maps.LatLng(26.797210, 69.595000),
+                new google.maps.LatLng(24.396494, 71.082731),
+                new google.maps.LatLng(23.645537, 68.263872),
+            ];
+
+            let greeceCoords = [
+                new google.maps.LatLng(40.848830, 20.984458),
+                new google.maps.LatLng(39.692405, 20.021123),
+                new google.maps.LatLng(39.821205, 19.850835),
+                new google.maps.LatLng(39.749445, 19.633855),
+                new google.maps.LatLng(39.360975, 20.113103),
+                new google.maps.LatLng(38.178026, 20.373691),
+                new google.maps.LatLng(35.279752, 23.545807),
+                new google.maps.LatLng(35.030121, 26.248479),
+                new google.maps.LatLng(40.729888, 26.045146),
+                new google.maps.LatLng(41.254826, 26.325388),
+                new google.maps.LatLng(41.359709, 26.623676),
+                new google.maps.LatLng(41.610721, 26.592928),
+                new google.maps.LatLng(41.713730, 26.076276),
+                new google.maps.LatLng(41.379988, 26.150373),
+                new google.maps.LatLng(41.353933, 26.129453),
+                new google.maps.LatLng(41.566943, 24.254250),
+                new google.maps.LatLng(40.817154, 21.023861),
+
+            ];
+            let romeCoords = [
+                new google.maps.LatLng(43.794780, 7.534303),
+                new google.maps.LatLng(44.163448, 7.707748),
+                new google.maps.LatLng(44.451782, 6.904562),
+                new google.maps.LatLng(44.825626, 7.040630),
+                new google.maps.LatLng(45.129566, 6.669823),
+                new google.maps.LatLng(45.386435, 7.177933),
+                new google.maps.LatLng(45.829136, 6.822256),
+                new google.maps.LatLng(46.456417, 8.443589),
+                new google.maps.LatLng(45.822699, 9.025606),
+                new google.maps.LatLng(46.504129, 9.358187),
+                new google.maps.LatLng(46.252377, 10.175782),
+                new google.maps.LatLng(46.615294, 10.106495),
+                new google.maps.LatLng(47.089136, 12.212841),
+                new google.maps.LatLng(46.516845, 13.681741),
+                new google.maps.LatLng(45.480437, 13.598596),
+                new google.maps.LatLng(45.136083, 12.282129),
+                new google.maps.LatLng(41.925355, 16.072944),
+                new google.maps.LatLng(40.110676, 18.518528),
+                new google.maps.LatLng(36.711110, 15.130922),
+                new google.maps.LatLng(37.801920, 12.425147),
+
+            ];
+            let middleEastCoords = [
+                new google.maps.LatLng(31.322482, 34.228260),
+                new google.maps.LatLng(29.400689, 34.934746),
+                new google.maps.LatLng(33.249811, 35.679453),
+                new google.maps.LatLng(33.091238, 35.111124)
+            ];
+            let mesopotamiaCoords = [
+                new google.maps.LatLng(30.171626, 49.338040),
+                new google.maps.LatLng(32.580687, 47.992343),
+                new google.maps.LatLng(34.216703, 46.045655),
+                new google.maps.LatLng(36.096516, 43.184416),
+                new google.maps.LatLng(36.800635, 37.840823),
+                new google.maps.LatLng(36.695949, 36.847882),
+                new google.maps.LatLng(35.927425, 36.560451),
+                new google.maps.LatLng(34.421722, 36.678036),
+                new google.maps.LatLng(33.663918, 37.945343),
+                new google.maps.LatLng(32.910348, 39.892031),
+                new google.maps.LatLng(31.762334, 44.020577),
+                new google.maps.LatLng(29.786849, 48.318968),
+            ];
+            let icelandCoords = [
+                new google.maps.LatLng(63.803217, -22.700457),
+                new google.maps.LatLng(64.196355, -21.725886),
+                new google.maps.LatLng(64.809650, -22.395446),
+                new google.maps.LatLng(64.729954, -23.808707),
+                new google.maps.LatLng(64.884842, -24.044263),
+                new google.maps.LatLng(64.926346, -23.825287),
+                new google.maps.LatLng(65.079420, -22.741635),
+                new google.maps.LatLng(65.026106, -21.795174),
+                new google.maps.LatLng(65.201249, -21.727350),
+                new google.maps.LatLng(65.116344, -22.122132),
+                new google.maps.LatLng(65.502844, -24.485917),
+                new google.maps.LatLng(66.201050, -23.473655),
+                new google.maps.LatLng(66.427230, -23.126764),
+                new google.maps.LatLng(66.464552, -22.465002),
+                new google.maps.LatLng(65.989120, -21.317594),
+                new google.maps.LatLng(65.591226, -21.305811),
+                new google.maps.LatLng(65.684710, -20.670804),
+                new google.maps.LatLng(66.074177, -20.424882),
+                new google.maps.LatLng(66.502925, -16.534452),
+                new google.maps.LatLng(66.379443, -14.574227),
+                new google.maps.LatLng(65.460372, -13.631813),
+                new google.maps.LatLng(65.072047, -13.514077),
+                new google.maps.LatLng(63.478795, -18.247635),
+                new google.maps.LatLng(63.875056, -21.180777),
+            ];
+            let northAmericaCoords = [
+                new google.maps.LatLng(44.809116, -66.980001),
+                new google.maps.LatLng(35.727371, -75.725894),
+                new google.maps.LatLng(31.006114, -81.515829),
+                new google.maps.LatLng(26.795940, -80.030426),
+                new google.maps.LatLng(25.315309, -80.241472),
+                new google.maps.LatLng(25.189028, -81.161720),
+                new google.maps.LatLng(27.851991, -82.856247),
+                new google.maps.LatLng(28.985755, -82.730031),
+                new google.maps.LatLng(30.097721, -83.984175),
+                new google.maps.LatLng(29.672305, -85.299022),
+                new google.maps.LatLng(28.752787, -95.656579),
+                new google.maps.LatLng(25.973820, -97.117302),
+                new google.maps.LatLng(29.734298, -101.495069),
+                new google.maps.LatLng(29.759138, -102.727796),
+                new google.maps.LatLng(29.028538, -103.134743),
+                new google.maps.LatLng(31.767829, -106.454646),
+                new google.maps.LatLng(31.789978, -108.205681),
+                new google.maps.LatLng(31.341169, -108.213911),
+                new google.maps.LatLng(31.339124, -111.076420),
+                new google.maps.LatLng(32.502900, -114.826282),
+                new google.maps.LatLng(32.526098, -117.127028),
+                new google.maps.LatLng(34.561674, -120.631861),
+                new google.maps.LatLng(40.308020, -124.351599),
+                new google.maps.LatLng(48.449148, -124.751406),
+                new google.maps.LatLng(48.995704, -123.299737),
+                new google.maps.LatLng(48.999883, -94.717427),
+                new google.maps.LatLng(48.760959, -94.703180),
+                new google.maps.LatLng(48.331804, -88.384412),
+                new google.maps.LatLng(45.317482, -82.537885),
+                new google.maps.LatLng(41.918937, -83.135605),
+                new google.maps.LatLng(47.437845, -69.089189),
+            ];
+            let ugandaCoords = [
+                new google.maps.LatLng(-0.977551, 33.932256),
+                new google.maps.LatLng(-0.961561, 30.717807),
+                new google.maps.LatLng(-1.461491, 29.928703),
+                new google.maps.LatLng(-1.383125, 29.582480),
+                new google.maps.LatLng(0.099620, 29.732727),
+                new google.maps.LatLng(1.151277, 30.248796),
+                new google.maps.LatLng(2.163379, 31.300530),
+                new google.maps.LatLng(2.437523, 30.751799),
+                new google.maps.LatLng(3.495673, 30.852554),
+                new google.maps.LatLng(3.694259, 30.974536),
+                new google.maps.LatLng(3.794117, 31.164558),
+                new google.maps.LatLng(3.795528, 31.286829),
+                new google.maps.LatLng(3.652357, 31.543385),
+                new google.maps.LatLng(3.751803, 31.732091),
+                new google.maps.LatLng(3.825851, 31.794287),
+                new google.maps.LatLng(3.838545, 31.804181),
+                new google.maps.LatLng(3.746866, 31.902422),
+                new google.maps.LatLng(3.588875, 31.954722),
+                new google.maps.LatLng(3.588555, 32.057831),
+                new google.maps.LatLng(3.529459, 32.101951),
+                new google.maps.LatLng(3.506069, 32.205062),
+                new google.maps.LatLng(3.596819, 32.196157),
+                new google.maps.LatLng(3.744619, 32.415032),
+                new google.maps.LatLng(3.891201, 33.025294),
+                new google.maps.LatLng(3.780381, 33.205187),
+                new google.maps.LatLng(3.744166, 33.518871),
+                new google.maps.LatLng(4.217794, 33.992327),
+                new google.maps.LatLng(2.528427, 34.923987),
+                new google.maps.LatLng(1.887672, 35.034304),
+                new google.maps.LatLng(0.128215, 33.916098),
+            ];
+            let nigeriaCoords = [
+                new google.maps.LatLng(4.701133, 8.510414),
+                new google.maps.LatLng(4.365989, 5.861187),
+                new google.maps.LatLng(6.320748, 4.529849),
+                new google.maps.LatLng(6.374209, 2.714389),
+                new google.maps.LatLng(9.075454, 2.768180),
+                new google.maps.LatLng(10.457321, 3.808539),
+                new google.maps.LatLng(11.722361, 3.571066),
+                new google.maps.LatLng(13.487995, 4.125170),
+                new google.maps.LatLng(13.895893, 5.532115),
+                new google.maps.LatLng(13.705165, 6.267019),
+                new google.maps.LatLng(12.997187, 7.010660),
+                new google.maps.LatLng(13.363106, 7.906228),
+                new google.maps.LatLng(12.810126, 9.673375),
+                new google.maps.LatLng(13.285297, 10.193125),
+                new google.maps.LatLng(13.386443, 11.560465),
+                new google.maps.LatLng(13.075088, 12.512006),
+                new google.maps.LatLng(13.712933, 13.351600),
+                new google.maps.LatLng(13.712933, 13.631465),
+                new google.maps.LatLng(13.082877, 14.079249),
+                new google.maps.LatLng(12.388734, 14.191195),
+                new google.maps.LatLng(12.356695, 14.483493),
+                new google.maps.LatLng(12.174339, 14.674863),
+                new google.maps.LatLng(11.724664, 14.552265),
+                new google.maps.LatLng(11.639691, 14.650921),
+                new google.maps.LatLng(11.518589, 14.618828),
+                new google.maps.LatLng(11.243588, 14.175468),
+                new google.maps.LatLng(11.324410, 13.974107),
+                new google.maps.LatLng(10.126324, 13.428370),
+                new google.maps.LatLng(6.515338, 11.347623),
+                new google.maps.LatLng(7.164265, 10.570724),
+                new google.maps.LatLng(7.078609, 10.163777),
+            ];
+            let guatemalaCoords = [
+                new google.maps.LatLng(14.539514, -92.218167),
+                new google.maps.LatLng(15.272056, -92.207180),
+                new google.maps.LatLng(16.075961, -91.734768),
+                new google.maps.LatLng(16.074883, -90.441066),
+                new google.maps.LatLng(16.411927, -90.384481),
+                new google.maps.LatLng(16.487239, -90.638536),
+                new google.maps.LatLng(16.607898, -90.643156),
+                new google.maps.LatLng(17.251344, -91.449167),
+                new google.maps.LatLng(17.251210, -90.987650),
+                new google.maps.LatLng(17.816235, -90.988363),
+                new google.maps.LatLng(17.822034, -89.151781),
+                new google.maps.LatLng(15.910219, -89.236147),
+                new google.maps.LatLng(15.903368, -88.912016),
+                new google.maps.LatLng(15.954745, -88.609257),
+                new google.maps.LatLng(15.725161, -88.249507),
+                new google.maps.LatLng(15.069264, -89.154224),
+                new google.maps.LatLng(14.881538, -89.228234),
+                new google.maps.LatLng(14.576656, -89.156897),
+                new google.maps.LatLng(14.590595, -89.243317),
+                new google.maps.LatLng(14.430485, -89.351817),
+                new google.maps.LatLng(14.419213, -89.578789),
+                new google.maps.LatLng(14.241593, -89.523501),
+                new google.maps.LatLng(14.038428, -89.735924),
+                new google.maps.LatLng(14.080769, -89.840680),
+                new google.maps.LatLng(13.750303, -90.131671),
+                new google.maps.LatLng(13.936778, -90.713651),
+                new google.maps.LatLng(13.936778, -91.246163),
+                new google.maps.LatLng(14.057605, -91.565060)
+            ];
+
+            let indiaPolygon = new google.maps.Polygon({
+                paths: indiaCoords,
+                strokeColor: "#0000FF",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#0000FF",
+                fillOpacity: 0.26,
+                title: "India",
+                id: "india",
+
+            });
+
+            let greecePolygon = new google.maps.Polygon({
+                paths: greeceCoords,
+                strokeColor: "#6F00FF",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#6F00FF",
+                fillOpacity: 0.26,
+                title: "Greece",
+                id: "greece",
+            });
+
+            let romePolygon = new google.maps.Polygon({
+                paths: romeCoords,
+                strokeColor: "#FF6A00",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF6A00",
+                fillOpacity: 0.26,
+                title: "Rome",
+                id: "rome",
+            });
+
+            let middleEastPolygon = new google.maps.Polygon({
+                paths: middleEastCoords,
+                strokeColor: "#B30000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#B30000",
+                fillOpacity: 0.26,
+                title: "Middle East",
+                id: "middleEast",
+            });
+
+            let mesopotamiaPolygon = new google.maps.Polygon({
+                paths: mesopotamiaCoords,
+                strokeColor: "#7CCF00",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#7CCF00",
+                fillOpacity: 0.26,
+                title: "Mesopotamia",
+                id: "mesopotamia",
+            });
+
+            let icelandPolygon = new google.maps.Polygon({
+                paths: icelandCoords,
+                strokeColor: "#03E3FC",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#03E3FC",
+                fillOpacity: 0.26,
+                title: "Iceland",
+                id: "iceland",
+            });
+
+            let northAmericaPolygon = new google.maps.Polygon({
+                paths: northAmericaCoords,
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: 0.26,
+                title: "North America",
+                id: "northAmerica",
+            });
+
+            let ugandaPolygon = new google.maps.Polygon({
+                paths: ugandaCoords,
+                strokeColor: "#FFD900",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FFD900",
+                fillOpacity: 0.26,
+                title: "Uganda",
+                id: "uganda",
+            });
+
+            let nigeriaPolygon = new google.maps.Polygon({
+                paths: nigeriaCoords,
+                strokeColor: "#00FFBF",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#00FFBF",
+                fillOpacity: 0.26,
+                title: "Nigeria",
+                id: "nigeria",
+            });
+
+            let guatemalaPolygon = new google.maps.Polygon({
+                paths: guatemalaCoords,
+                strokeColor: "#004E00",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#004E00",
+                fillOpacity: 0.26,
+                title: "Guatemala",
+                id: "guatemala",
+            });
+
+            let polygonList = [];
+            polygonList.push(indiaPolygon);
+            polygonList.push(greecePolygon);
+            polygonList.push(romePolygon);
+            polygonList.push(middleEastPolygon);
+            polygonList.push(mesopotamiaPolygon);
+            polygonList.push(icelandPolygon);
+            polygonList.push(northAmericaPolygon);
+            polygonList.push(ugandaPolygon);
+            polygonList.push(nigeriaPolygon);
+            polygonList.push(guatemalaPolygon);
+
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: new google.maps.LatLng(0, 0),
+                zoom: 3,
+                mapTypeControlOptions: {
+                    mapTypeIds: [google.maps.MapTypeId.ROADMAP, "grayscale"]
+                },
+                minZoom: 3,
+                streetViewControl: false,
+                mapTypeControl: false,
+            });
+
+            map.mapTypes.set("grayscale", new google.maps.StyledMapType(styles, {
+                name: "Grayscale"
+            }));
+            map.setMapTypeId("grayscale");
+
+            polygonList.forEach(function (pol) {
+                google.maps.event.addListener(pol, "mouseover", function (e) {
+                    injectTooltip(e, pol);
+                });
+                google.maps.event.addListener(pol, "mousemove", function (e) {
+                    moveTooltip(e);
+                });
+                google.maps.event.addListener(pol, "mouseout", function (e) {
+                    deleteTooltip(e);
+                });
+                google.maps.event.addListener(pol, "click", function (e) {
+                    launchModal(e, pol);
+                });
+                pol.setMap(map);
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALBXa9cz8Ji7PpPg0Rpkojx6f93nqqC6k&callback=initMap"
+        async defer></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Culture</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalContent">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
