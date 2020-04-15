@@ -45,7 +45,7 @@
             else if(id === "rome") {
                 return "Roman";
             }
-            else if(id === "middleEast") {
+            else if(id === "nearEast") {
                 return "Christian";
             }
             else if(id === "mesopotamia") {
@@ -186,7 +186,7 @@
                 new google.maps.LatLng(37.801920, 12.425147),
 
             ];
-            let middleEastCoords = [
+            let nearEastCoords = [
                 new google.maps.LatLng(31.322482, 34.228260),
                 new google.maps.LatLng(29.400689, 34.934746),
                 new google.maps.LatLng(33.249811, 35.679453),
@@ -395,15 +395,15 @@
                 id: "rome",
             });
 
-            let middleEastPolygon = new google.maps.Polygon({
-                paths: middleEastCoords,
+            let nearEastPolygon = new google.maps.Polygon({
+                paths: nearEastCoords,
                 strokeColor: "#B30000",
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
                 fillColor: "#B30000",
                 fillOpacity: 0.26,
-                title: "Middle East",
-                id: "middleEast",
+                title: "Near East",
+                id: "nearEast",
             });
 
             let mesopotamiaPolygon = new google.maps.Polygon({
@@ -476,7 +476,7 @@
             polygonList.push(indiaPolygon);
             polygonList.push(greecePolygon);
             polygonList.push(romePolygon);
-            polygonList.push(middleEastPolygon);
+            polygonList.push(nearEastPolygon);
             polygonList.push(mesopotamiaPolygon);
             polygonList.push(icelandPolygon);
             polygonList.push(northAmericaPolygon);
