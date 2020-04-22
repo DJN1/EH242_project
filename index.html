@@ -124,25 +124,6 @@
                 }]
             }];
 
-            let indiaCoords = [
-                new google.maps.LatLng(8.102076, 77.519092),
-                new google.maps.LatLng(21.684288, 89.094167),
-                new google.maps.LatLng(26.588023, 88.503761),
-                new google.maps.LatLng(25.113842, 92.238007),
-                new google.maps.LatLng(22.159934, 92.807514),
-                new google.maps.LatLng(27.747137, 97.059525),
-                new google.maps.LatLng(28.298006, 95.876478),
-                new google.maps.LatLng(27.143455, 88.745504),
-                new google.maps.LatLng(28.116470, 88.635680),
-                new google.maps.LatLng(26.365914, 88.025641),
-                new google.maps.LatLng(28.885826, 80.085272),
-                new google.maps.LatLng(30.264304, 80.937190),
-                new google.maps.LatLng(32.993392, 77.705604),
-                new google.maps.LatLng(26.797210, 69.595000),
-                new google.maps.LatLng(24.396494, 71.082731),
-                new google.maps.LatLng(23.645537, 68.263872),
-            ];
-
             let greeceCoords = [
                 new google.maps.LatLng(40.848830, 20.984458),
                 new google.maps.LatLng(39.692405, 20.021123),
@@ -361,17 +342,6 @@
                 new google.maps.LatLng(14.057605, -91.565060)
             ];
 
-            let indiaPolygon = new google.maps.Polygon({
-                paths: indiaCoords,
-                strokeColor: "#0000FF",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: "#0000FF",
-                fillOpacity: 0.26,
-                title: "India",
-                id: "india",
-
-            });
 
             let greecePolygon = new google.maps.Polygon({
                 paths: greeceCoords,
@@ -473,7 +443,6 @@
             });
 
             let polygonList = [];
-            polygonList.push(indiaPolygon);
             polygonList.push(greecePolygon);
             polygonList.push(romePolygon);
             polygonList.push(nearEastPolygon);
@@ -485,7 +454,7 @@
             polygonList.push(guatemalaPolygon);
 
 
-            map = new google.maps.Map(document.getElementById('map'), {
+            map = new google.maps.Map(document.getElementById("map"), {
                 center: new google.maps.LatLng(0, 0),
                 zoom: 3,
                 mapTypeControlOptions: {
