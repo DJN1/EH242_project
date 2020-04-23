@@ -94,16 +94,16 @@
                 tipObj.innerHTML = data.title;
                 tipObj.style.position = "fixed";
                 tipObj.style.boxSizing = "unset";
-                tipObj.style.top = event.rb.clientY + window.scrollY + offset.y + "px";
-                tipObj.style.left = event.rb.clientX + window.scrollX + offset.x + "px";
+                tipObj.style.top = event.tb.clientY + window.scrollY + offset.y + "px";
+                tipObj.style.left = event.tb.clientX + window.scrollX + offset.x + "px";
                 document.body.appendChild(tipObj);
             }
         }
 
         function moveTooltip(event) {
             if (tipObj && event) {
-                tipObj.style.top = event.rb.clientY + window.scrollY + offset.y + "px";
-                tipObj.style.left = event.rb.clientX + window.scrollX + offset.x + "px";
+                tipObj.style.top = event.tb.clientY + window.scrollY + offset.y + "px";
+                tipObj.style.left = event.tb.clientX + window.scrollX + offset.x + "px";
             }
         }
 
